@@ -24,7 +24,7 @@ def SplitLangs(fname):
 
 def main():
     for fname in argv[1:]:
-        print 'Processing "%s"...' % fname
+        stderr.write('Processing "%s"...\n' % fname)
         r = SplitLangs(fname)
         if r != 0: return r
     return 0

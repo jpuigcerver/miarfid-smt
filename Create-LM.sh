@@ -47,7 +47,7 @@ done
 
 for data in ${DATA[@]}; do
     for o in ${ORDER[@]}; do
-	echo "Creating \"$data.lm$o\"..."
+	echo "Creating \"$data.lm$o\"...">&2;
 	$SRILM -order $o -unk -interpolate -text $data \
 	    -lm $data.lm$o
     done

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from sys import argv
+from sys import argv, stderr
 
 def tuplify(sent, n):
     wrd = [ '' for i in range(n-1)  ]
@@ -10,6 +10,11 @@ def tuplify(sent, n):
         out_sent.append('_'.join(wrd))
         wrd = wrd[1:]
     return ' '.join(out_sent)
+
+if len(argv) < 3:
+    stderr.write('Usage: %s K FILE...\n' % argv[0])
+    stderr.write('Create a version of each argument FILE with k-tuples\n')
+    exit(1)
 
 N = int(argv[1])
 for fname in argv[2:]:
@@ -24,3 +29,4 @@ for fname in argv[2:]:
         fout.write('%s # %s\n' % (src_sent, dst_sent))
     fin.close()
     fout.close()
+exit(0)
