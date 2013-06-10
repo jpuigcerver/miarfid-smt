@@ -5,9 +5,9 @@ export LC_NUMERIC=C
 TRAIN=( `ls data/EuTrans/training.train.train[0-9][0-9]` )
 VALID=( `ls data/EuTrans/training.train.valid[0-9][0-9]` )
 MERT="data/EuTrans/training.mert"
-LM=( 1 2 3 4 5 6 7 )
+LM=( 1 )
 FORCE=0
-MAX_ROUNDS=1000
+MAX_ROUNDS=0
 START_ROUND=1
 
 function TrainMert {
@@ -18,7 +18,7 @@ function TrainMert {
     dst=$5
     bdir=$6
     lm=$tr.$dst.lm${lmn}
-    wdir=$bdir/Work_`basename $tr`_`basename $lm`_${src}_${dst}
+    wdir=$bdir/Work_`basename $tr`_lmn${lmn}/${src}_${dst}
     [ ! -f $lm -o $FORCE -eq 1 ] && { ./Create-LM.sh -d $tr.$dst -o $lmn; }
     [ ! -f $wdir/model/moses.ini -o $FORCE -eq 1 ] && {
         echo "Train phase..." >&2;
@@ -40,9 +40,9 @@ function Test {
     bdir=$6
     lm1=$tr.$dst.lm${lmn}
     lm2=$tr.$src.lm${lmn}
-    wdir=$bdir/Work_Degradation_`basename $tr`_lmn${lmn}_${src}
-    wdir1=$bdir/Work_`basename $tr`_`basename $lm1`_${src}_${dst}
-    wdir2=$bdir/Work_`basename $tr`_`basename $lm2`_${dst}_${src}
+    wdir=$bdir/Work_Degradation_`basename $tr`_lmn${lmn}/${src}
+    wdir1=$bdir/Work_`basename $tr`_lmn${lmn}/${src}_${dst}
+    wdir2=$bdir/Work_`basename $tr`_lmn${lmn}/${dst}_${src}
     hyp1=$wdir/`basename $va`.$src.$dst.$round
     hyp2=$wdir/`basename $va`.$dst.$src.$round
     if [ $round -eq 1 ]; then
@@ -51,8 +51,8 @@ function Test {
         src1=$wdir/`basename $va`.$dst.$src.$[round-1]
     fi
     echo "Test phase..." >&2;
-    ./Moses-Test.sh $wdir1/model/moses.ini $src1 $hyp1
-    ./Moses-Test.sh $wdir2/model/moses.ini $hyp1 $hyp2
+    ./Moses-Test.sh $wdir1/mert/moses.ini $src1 $hyp1
+    ./Moses-Test.sh $wdir2/mert/moses.ini $hyp1 $hyp2
     ./Detuplify.py < $hyp2 > /tmp/$$.hyp
     ./Detuplify.py < $va.$src > /tmp/$$.ref
     ./BLEU.sh /tmp/$$.hyp /tmp/$$.ref

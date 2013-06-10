@@ -15,3 +15,4 @@ $MOSES -f $MODEL -threads $THREADS < $SRC > $DST_HYP 2> $DST_HYP.log
 if [ "$DST_REF" != "" ]; then
     ./BLEU.sh $DST_HYP $DST_REF
 fi
+exit 0

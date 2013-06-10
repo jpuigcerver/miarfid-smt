@@ -36,14 +36,17 @@ case "$FORMAT" in
     png)
         OUTPUT="set output '$DATA.png'"
         PERSIST=
+        TERM="set term png"
         ;;
     ps)
         OUTPUT="set output '$DATA.ps'"
         PERSIST=
+        TERM="set term postscript enhanced color"
         ;;
     x11)
         OUTPUT=
         PERSIST="-persist"
+        TERM="set term x11"
         ;;
     *)
         echo "Unknown format: $FORMAT" >&2; exit 1
@@ -51,15 +54,12 @@ esac
 
 {
     cat <<EOF
-set term $FORMAT
+$TERM
 $OUTPUT
-set style data histogram
-set style histogram errorbars linewidth 1
-set bars front
 set xlabel 'ROUNDS'
 set ylabel 'BLEU'
-plot '$DATA' u 3:(\$3-\$4):(\$3+\$4):xticlabels(2) t 'ES > ES', \
-'$DATA' u 5:(\$5-\$6):(\$5+\$6):xticlabels(2) t 'EN > EN'
+plot '$DATA' u 1:2 t 'ES' w l, \
+'$DATA' u 1:3 t 'EN' w l
 EOF
 } | gnuplot $PERSIST
 exit 0

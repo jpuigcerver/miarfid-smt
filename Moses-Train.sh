@@ -21,5 +21,5 @@ mkdir -p $WDIR
 ${SCRIPTS_ROOTDIR}/training/train-model.perl -root-dir $WDIR \
     -external-bin-dir `pwd`/tools/bin \
     -corpus $CORPUS_PREFIX -f $SRC -e $DST -alignment grow-diag-final-and \
-    -reordering msd-bidirectional-fe -lm 0:${LM_N}:$LM &> $WDIR.log
+    -reordering msd-bidirectional-fe -lm 0:${LM_N}:$LM &> $WDIR/train.log
 exit 0
